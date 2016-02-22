@@ -6,6 +6,7 @@ import (
 )
 
 func StartServer(port string) {
+	router := NewRouter()
 	log.Println("starting the webserver...", "http://localhost"+port)
-	http.ListenAndServe(port, nil)
+	http.ListenAndServe(port, router)
 }
