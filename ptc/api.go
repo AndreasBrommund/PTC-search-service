@@ -12,3 +12,10 @@ func apiVersion(w http.ResponseWriter, r *http.Request) {
 			Version string `json:"version"`
 		}{"PTC-Search-Service", "0.1"})
 }
+func countTweet(w http.ResponseWriter, r *http.Request) {
+	tweets, err := database.GetNumberOfTweets()
+	if err != nil {
+		panic(err)
+	}
+	json.NewEncoder(w).Encode(tweets)
+}
