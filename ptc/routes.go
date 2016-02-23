@@ -6,7 +6,7 @@ import (
 )
 
 func initRoutes() (routes Routes) {
-	middleware := alice.New(context.ClearHandler)
+	middleware := alice.New(context.ClearHandler, loggingHandler)
 
 	routes.Get("api version", "/api/1",
 		middleware.ThenFunc(apiVersion))
