@@ -5,6 +5,8 @@ import (
 
 	"net/http"
 
+	"os"
+
 	"github.com/lcd/PTC-search-service/db"
 )
 
@@ -17,6 +19,7 @@ func StartServer(port string) {
 		log.Fatal(err)
 	}
 	router := NewRouter()
+	router.ServeFiles("/client/*filepath", http.Dir(os.Getenv("PTCFRONTEND")))
 	log.Println("starting the webserver...", "http://localhost"+port)
 	http.ListenAndServe(port, router)
 }
