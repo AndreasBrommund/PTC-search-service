@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/lcd/PTC-search-service/ptc"
+	"./ptc"
 )
 
 //Entry point of Search service application
