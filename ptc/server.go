@@ -12,6 +12,8 @@ import (
 
 var database db.Database
 
+//StartServer starts the entire web server.
+//It is also responsible for initiating the database struct.
 func StartServer(port string) {
 	var err error
 	database, err = db.NewDatabase("./config/db.json", "dev")

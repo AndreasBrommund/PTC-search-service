@@ -5,6 +5,9 @@ import (
 	"github.com/justinas/alice"
 )
 
+//initRoutes constructs the routes exposed in this application.
+//It will also connect the routes with the handler functions,
+//optionally setting up middleware is also supported.
 func initRoutes() (routes Routes) {
 	middleware := alice.New(context.ClearHandler, loggingHandler)
 
