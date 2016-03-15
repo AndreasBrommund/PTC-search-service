@@ -1,4 +1,4 @@
-package db
+package ptc
 
 import (
 	"database/sql"
