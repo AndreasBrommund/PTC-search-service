@@ -13,8 +13,5 @@ func initRoutes() (routes Routes) {
 
 	routes.Get("api version", "/api/1",
 		middleware.ThenFunc(apiVersion))
-
-	routes.Get("Tweet count", "/api/1/count/tweet",
-		middleware.ThenFunc(countTweet))
 	return
 }
