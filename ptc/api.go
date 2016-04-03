@@ -21,17 +21,18 @@ func apiVersion(w http.ResponseWriter, r *http.Request) {
 func tweetRange(w http.ResponseWriter, r *http.Request) {
 	
 	type party struct {
-		Name 	string
+		name 	string
 	}
 
-	//p := party{"socialdemmokraterna"}
+	p := party{"socialdemmokraterna"}
 	
 	//party will be sent to elastic and hopfully we can 
 	//retrive first and last post from that party
 	//and then return
 	json.NewEncoder(w).Encode(
 		struct {
-			minDate   string `json:""`
-			maxDate 	string `json:""`
-		}{"2006-02-01T00:00:00.000Z", "2016-02-01T00:00:00.000Z"})
+			Party		string `json:"party"`
+			MinDate   	string `json:"minDate"`
+			MaxDate 	string `json:"maxDate"`
+		}{p.name,"2006-02-01T00:00:00.000Z", "2016-02-01T00:00:00.000Z"})
 }
