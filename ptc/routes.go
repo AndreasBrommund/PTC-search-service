@@ -13,5 +13,9 @@ func initRoutes() (routes Routes) {
 
 	routes.Get("api version", "/api/1/",
 		middleware.ThenFunc(apiVersion))
+
+	routes.Get("get hastags", "/api/1/tags",
+		middleware.ThenFunc(getHastags))
+
 	return
 }
