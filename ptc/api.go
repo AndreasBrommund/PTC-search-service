@@ -42,7 +42,6 @@ func getHastags(w http.ResponseWriter, r *http.Request) {
 		log.Println("Json unmarshal error: \n", err)
 	}
 
-
 	type Days struct {
 		Ratio [][]float32 `json:"ratio"`
 	}
@@ -69,20 +68,17 @@ func getHastags(w http.ResponseWriter, r *http.Request) {
 	send.StartDate = starDate
 	send.EndDate = endDate
 
-
-
 	var hastags []string
 	var ratioDays [][]float32
 	var ratioTotal []float32
 
-	for i := 0;i < limit;i++{
+	for i := 0; i < limit; i++ {
 		var days []float32
-		days = append(days,tweets[i].Ratio)
-		ratioDays = append(ratioDays,days)
-		ratioTotal = append(ratioTotal,tweets[i].Ratio)
-		hastags = append(hastags,tweets[i].Tag)
+		days = append(days, tweets[i].Ratio)
+		ratioDays = append(ratioDays, days)
+		ratioTotal = append(ratioTotal, tweets[i].Ratio)
+		hastags = append(hastags, tweets[i].Tag)
 	}
-
 
 	send.Hashtags = hastags
 	send.UniqueTags = len(tweets)
