@@ -3,8 +3,10 @@ package ptc
 import (
 	"log"
 	"net/http"
+	"reflect"
 	"time"
 
+	"encoding/json"
 	"github.com/gorilla/context"
 )
 
@@ -40,4 +42,31 @@ func recoverHandler(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 	}
 	return http.HandlerFunc(fn)
+}
+
+// Decodes a request body into the struct passed to the middleware.
+// If the request body is not JSON, it will return a 400 Bad Request error.
+// Stores the decoded body into a context object.
+func jsonParserHandler(v interface{}) func(http.Handler) http.Handler {
+	t := reflect.TypeOf(v)
+
+	m := func(next http.Handler) http.Handler {
+		fn := func(w http.ResponseWriter, r *http.Request) {
+			val := reflect.New(t).Interface()
+			err := json.NewDecoder(r.Body).Decode(val)
+
+			if err != nil {
+				log.Println(err)
+				panic(err)
+				return
+			}
+
+			if next != nil {
+				context.Set(r, "body", val)
+				next.ServeHTTP(w, r)
+			}
+		}
+		return http.HandlerFunc(fn)
+	}
+	return m
 }
