@@ -13,5 +13,8 @@ func initRoutes() (routes Routes) {
 
 	routes.Get("api version", "/api/1/",
 		middleware.ThenFunc(apiVersion))
+
+	routes.Get("tweets from user", "/api/2/",
+		middleware.ThenFunc(getTweetsFromUserID))
 	return
 }

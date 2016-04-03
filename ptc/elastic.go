@@ -1,4 +1,4 @@
-package main
+package ptc
 
 import (
     "fmt"
@@ -19,7 +19,11 @@ type Tweet struct {
   Suggest  *elastic.SuggestField `json:"suggest_field,omitempty"`
 }
 
-func main() {
+type Elastic struct {
+    client *elastic.Client 
+}
+
+func NewElastic() (Elastic, error) {
     // Create the Elasticsearch client
     client, err := elastic.NewClient()
     if err != nil {
@@ -28,10 +32,13 @@ func main() {
         log.Println(err)
         panic(err)
     }
-
+    return Elastic{client}, err
+}
+func (this *Elastic) SearchTweetsFromID(user_id string) *elastic.SearchResult {
+    
     // Make a search
-    termQuery := elastic.NewTermQuery("user_id", "100004471")
-    searchResult, err := client.Search().
+    termQuery := elastic.NewTermQuery("user_id", user_id)
+    searchResult, err := this.client.Search().
         Index("test-index").   // search in index "twitter"
         Query(termQuery).   // specify the query
         Sort("user_id", true). // sort by "user" field, ascending
@@ -56,5 +63,7 @@ func main() {
     }
     // Return total hits
     fmt.Printf("Found a total of %d tweets\n", searchResult.TotalHits())
+
+    return searchResult
 
 }
