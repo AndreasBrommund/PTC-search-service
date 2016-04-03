@@ -22,3 +22,22 @@ func loggingHandler(next http.Handler) http.Handler {
 			t2.Sub(t1))
 	})
 }
+
+// recoverHandler recovers from panics and logs the error to stdout
+// Response to the caller will contain a message with the error that made
+// service crash.
+func recoverHandler(next http.Handler) http.Handler {
+	fn := func(w http.ResponseWriter, r *http.Request) {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Printf("panic: %+v", err)
+				w.WriteHeader(http.StatusInternalServerError)
+				json.NewEncoder(w).Encode(struct {
+					Fel string `json:"error"`
+				}{"Something when terrible wrong"})
+			}
+		}()
+		next.ServeHTTP(w, r)
+	}
+	return http.HandlerFunc(fn)
+}
