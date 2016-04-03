@@ -3,6 +3,7 @@ package ptc
 import (
 	"encoding/json"
 	"net/http"
+
 )
 
 //apiVersion is a simple endpoint handler that
@@ -19,11 +20,18 @@ func apiVersion(w http.ResponseWriter, r *http.Request) {
 // in a json object.
 func tweetRange(w http.ResponseWriter, r *http.Request) {
 	
+	type party struct {
+		Name 	string
+	}
+
+	//p := party{"socialdemmokraterna"}
 	
-	
+	//party will be sent to elastic and hopfully we can 
+	//retrive first and last post from that party
+	//and then return
 	json.NewEncoder(w).Encode(
 		struct {
 			StartDate   string `json:""`
 			EndDate 	string `json:""`
-		}{"PTC-Search-Service", "0.1"})
+		}{"2006-02-01T00:00:00.000Z", "2016-02-01T00:00:00.000Z"})
 }
