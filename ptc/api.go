@@ -31,7 +31,7 @@ func tweetRange(w http.ResponseWriter, r *http.Request) {
 	//and then return
 	json.NewEncoder(w).Encode(
 		struct {
-			StartDate   string `json:""`
-			EndDate 	string `json:""`
+			minDate   string `json:""`
+			maxDate 	string `json:""`
 		}{"2006-02-01T00:00:00.000Z", "2016-02-01T00:00:00.000Z"})
 }
