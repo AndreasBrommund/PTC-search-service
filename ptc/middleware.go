@@ -7,7 +7,9 @@ import (
 	"time"
 
 	"encoding/json"
+
 	"github.com/gorilla/context"
+	"github.com/julienschmidt/httprouter"
 )
 
 //loggingHandler is a middleware that logs the time it takes to
@@ -69,4 +71,16 @@ func jsonParserHandler(v interface{}) func(http.Handler) http.Handler {
 		return http.HandlerFunc(fn)
 	}
 	return m
+}
+
+// Body is a function to get the decoded body from the request context
+func Body(r *http.Request) interface{} {
+	return context.Get(r, "body")
+}
+
+// Param is a function that gets the parameter value of a specified
+// url key.
+func Param(r *http.Request, key string) string {
+	ps := context.Get(r, "params").(httprouter.Params)
+	return ps.ByName(key)
 }
