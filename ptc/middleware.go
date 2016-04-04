@@ -9,6 +9,7 @@ import (
 
 	"github.com/gorilla/context"
 	"github.com/julienschmidt/httprouter"
+	"errors"
 )
 
 //loggingHandler is a middleware that logs the time it takes to
@@ -45,7 +46,14 @@ func recoverHandler(next http.Handler) http.Handler {
 	return http.HandlerFunc(fn)
 }
 
+//Param finds and returns the value from a url parameter
+//For example /example?token=123aBc would return 123aBc as a string.
+func Param (r *http.Request,key string) (s string,err error) {
+	s = r.URL.Query().Get(key)
+	if len(s) == 0 {
+		return "",errors.New("No parameter found for that key")
 	}
+	return
 }
 
 
