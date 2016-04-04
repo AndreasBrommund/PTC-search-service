@@ -56,10 +56,9 @@ func Param (r *http.Request,key string) (s string,err error) {
 	return
 }
 
-
-// Param is a function that gets the parameter value of a specified
-// url key.
-func Param(r *http.Request, key string) string {
+// NamedParam gets the named parameter value of a specified pattern.
+// For example a route like /user/:id, one could access the value of :id.
+func NamedParam(r *http.Request, key string) string {
 	ps := context.Get(r, "params").(httprouter.Params)
 	return ps.ByName(key)
 }
