@@ -29,7 +29,7 @@ func NewDatabase(path, name string) (db Database, err error) {
 
 	if err = conn.Ping(); err != nil {
 		//We are not connected to the db
-		log.Fatal("No connection to db found...")
+		log.Println("No connection to posgres found...")
 		return
 	}
 

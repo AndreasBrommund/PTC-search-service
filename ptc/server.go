@@ -13,7 +13,7 @@ var database Database
 func StartServer(port string) {
 	var err error
 	if database, err = NewDatabase("./config/db.json", "dev"); err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	router := NewRouter()
