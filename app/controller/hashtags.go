@@ -2,16 +2,15 @@ package controller
 
 import (
 	"encoding/json"
-	"lcd/PTC-search-service/app/models"
-	"reflect"
-	"lcd/PTC-search-service/app/storage"
-	"gopkg.in/olivere/elastic.v3"
-	"net/http"
 	"io/ioutil"
+	"lcd/PTC-search-service/app/models"
+	"lcd/PTC-search-service/app/storage"
 	"log"
+	"net/http"
+	"reflect"
+
+	"gopkg.in/olivere/elastic.v3"
 )
-
-
 
 func GetHastags(w http.ResponseWriter, r *http.Request) {
 
@@ -19,7 +18,6 @@ func GetHastags(w http.ResponseWriter, r *http.Request) {
 	var limit int = 100
 	var starDate string
 	var endDate string
-
 
 	//This should be replaced by elastic
 	type tweetData struct {
@@ -75,14 +73,14 @@ func GetTweetsFromUserID(w http.ResponseWriter, r *http.Request) {
 	searchResult = storage.ElasticSearch.SearchTweetsFromID("100004471")
 	var ttyp models.Tweet
 	for _, item := range searchResult.Each(reflect.TypeOf(ttyp)) {
-        if t, ok := item.(models.Tweet); ok {
-        	if len(t.Hashtags) != 0 {
-	            json.NewEncoder(w).Encode(
-		            struct {
-					User    string `json:"user_id"`
-					Hashtags 	[]string `json:"hashtags"`
-				}{t.User, t.Hashtags})
-        	}
-        }
-    }
+		if t, ok := item.(models.Tweet); ok {
+			if len(t.Hashtags) != 0 {
+				json.NewEncoder(w).Encode(
+					struct {
+						User     string   `json:"user_id"`
+						Hashtags []string `json:"hashtags"`
+					}{t.User, t.Hashtags})
+			}
+		}
+	}
 }

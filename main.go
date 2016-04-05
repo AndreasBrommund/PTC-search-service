@@ -13,7 +13,7 @@ func main() {
 	port := flag.String("port", ":8080", "The port the webserver should run on.")
 	flag.Parse()
 	fmt.Println("Port:", *port)
-	if err := storage.Connect();err !=nil {
+	if err := storage.Connect(); err != nil {
 		log.Println("Cannot connect to elastic..")
 	} //Init database
 	app.StartServer(*port)
