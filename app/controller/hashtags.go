@@ -41,29 +41,8 @@ func GetHastags(w http.ResponseWriter, r *http.Request) {
 		log.Println("Json unmarshal error: \n", err)
 	}
 
-
-	//Json structure
-	type Days struct {
-		Ratio [][]float32 `json:"ratio"`
-	}
-
-	type RequestedInterval struct {
-		Ratio []float32 `json:"ratio"`
-	}
-
-	type TweetParty struct {
-		Name              string            `json:"name"`
-		Limit             int               `json:"limit"`
-		StartDate         string            `json:"startDate"`
-		EndDate           string            `json:"endDate"`
-		Hashtags          []string          `json:"hastags"`
-		UniqueTags        int               `json:"uniqueTags"`
-		Days              Days              `json:"days"`
-		RequestedInterval RequestedInterval `json:"requestedInterval"`
-	}
-
 	//Set up the response
-	var respons TweetParty
+	var respons models.TweetParty
 
 	respons.Name = tweets[0].Party
 	respons.Limit = limit
@@ -84,8 +63,8 @@ func GetHastags(w http.ResponseWriter, r *http.Request) {
 
 	respons.Hashtags = hastags
 	respons.UniqueTags = len(tweets)
-	respons.Days = Days{ratioDays}
-	respons.RequestedInterval = RequestedInterval{ratioTotal}
+	respons.Days = models.Days{ratioDays}
+	respons.RequestedInterval = models.RequestedInterval{ratioTotal}
 
 	json.NewEncoder(w).Encode(respons)
 }
