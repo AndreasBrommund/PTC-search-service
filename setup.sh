@@ -10,6 +10,9 @@ go get github.com/justinas/alice
 echo 'go get justinas/lib/pq'
 go get github.com/lib/pq
 
+echo 'go get gopkg.in/olivere/elastic.v3'
+go get gopkg.in/olivere/elastic.v3
+
 echo 'Add config folder'
 mkdir config
 
