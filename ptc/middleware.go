@@ -5,7 +5,11 @@ import (
 	"net/http"
 	"time"
 
+	"encoding/json"
+
 	"github.com/gorilla/context"
+	"github.com/julienschmidt/httprouter"
+	"errors"
 )
 
 //loggingHandler is a middleware that logs the time it takes to
@@ -21,4 +25,40 @@ func loggingHandler(next http.Handler) http.Handler {
 			r.URL.String(),
 			t2.Sub(t1))
 	})
+}
+
+// recoverHandler recovers from panics and logs the error to stdout
+// Response to the caller will contain a message with the error that made
+// service crash.
+func recoverHandler(next http.Handler) http.Handler {
+	fn := func(w http.ResponseWriter, r *http.Request) {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Printf("panic: %+v", err)
+				w.WriteHeader(http.StatusInternalServerError)
+				json.NewEncoder(w).Encode(struct {
+					Fel string `json:"error"`
+				}{"Something when terrible wrong"})
+			}
+		}()
+		next.ServeHTTP(w, r)
+	}
+	return http.HandlerFunc(fn)
+}
+
+//Param finds and returns the value from a url parameter
+//For example /example?token=123aBc would return 123aBc as a string.
+func Param (r *http.Request,key string) (s string,err error) {
+	s = r.URL.Query().Get(key)
+	if len(s) == 0 {
+		return "",errors.New("No parameter found for that key")
+	}
+	return
+}
+
+// NamedParam gets the named parameter value of a specified pattern.
+// For example a route like /user/:id, one could access the value of :id.
+func NamedParam(r *http.Request, key string) string {
+	ps := context.Get(r, "params").(httprouter.Params)
+	return ps.ByName(key)
 }
