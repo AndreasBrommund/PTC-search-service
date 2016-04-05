@@ -6,8 +6,6 @@ import (
 )
 
 var ElasticSearch Elastic
-
-
 // A type that holds our Elastic client, to prevent us from creating it over and over again
 type Elastic struct {
     client *elastic.Client 
@@ -23,7 +21,6 @@ func Connect() error  {
         log.Println(err)
         return err
     }
-
     ElasticSearch = Elastic{client}
     return nil
 }
