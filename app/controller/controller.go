@@ -1,17 +1,19 @@
-package ptc
+package controller
 
 import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
 	"net/http"
-    	"gopkg.in/olivere/elastic.v3"
-    	"reflect"
+	"reflect"
+	"lcd/PTC-search-service/app/models"
+	"gopkg.in/olivere/elastic.v3"
+	"lcd/PTC-search-service/app/storage"
 )
 
 //apiVersion is a simple endpoint handler that
 //just writes a simple struct as json as the HTTP response.
-func apiVersion(w http.ResponseWriter, r *http.Request) {
+func ApiVersion(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(
 		struct {
 			Name    string `json:"name"`
@@ -19,7 +21,7 @@ func apiVersion(w http.ResponseWriter, r *http.Request) {
 		}{"PTC-Search-Service", "0.1"})
 }
 
-func getHastags(w http.ResponseWriter, r *http.Request) {
+func GetHastags(w http.ResponseWriter, r *http.Request) {
 
 	//Parameters from the request
 	var limit int = 100
@@ -96,13 +98,13 @@ func getHastags(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(respons)
 }
 
-func getTweetsFromUserID(w http.ResponseWriter, r *http.Request) {
+func GetTweetsFromUserID(w http.ResponseWriter, r *http.Request) {
 	var searchResult *elastic.SearchResult
 	// elasticSearch is a global variable defined in server.go containing a Elastic object with a client
-	searchResult = elasticSearch.SearchTweetsFromID("100004471")
-	var ttyp Tweet
+	searchResult = storage.ElasticSearch.SearchTweetsFromID("100004471")
+	var ttyp models.Tweet
 	for _, item := range searchResult.Each(reflect.TypeOf(ttyp)) {
-        if t, ok := item.(Tweet); ok {
+        if t, ok := item.(models.Tweet); ok {
         	if len(t.Hashtags) != 0 {
 	            json.NewEncoder(w).Encode(
 		            struct {

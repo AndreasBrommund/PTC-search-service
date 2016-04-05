@@ -1,12 +1,10 @@
-package ptc
+package web
 
 import (
 	"log"
 	"net/http"
 	"time"
-
 	"encoding/json"
-
 	"github.com/gorilla/context"
 	"github.com/julienschmidt/httprouter"
 	"errors"
@@ -14,7 +12,7 @@ import (
 
 //loggingHandler is a middleware that logs the time it takes to
 //serve a specific endpoint handler.
-func loggingHandler(next http.Handler) http.Handler {
+func LoggingHandler(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		t1 := time.Now()
 		next.ServeHTTP(w, r)
@@ -30,7 +28,7 @@ func loggingHandler(next http.Handler) http.Handler {
 // recoverHandler recovers from panics and logs the error to stdout
 // Response to the caller will contain a message with the error that made
 // service crash.
-func recoverHandler(next http.Handler) http.Handler {
+func RecoverHandler(next http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
 			if err := recover(); err != nil {

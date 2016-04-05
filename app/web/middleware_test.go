@@ -1,4 +1,4 @@
-package ptc
+package web
 
 import (
 	"testing"
