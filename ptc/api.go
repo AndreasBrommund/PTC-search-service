@@ -19,10 +19,13 @@ func apiVersion(w http.ResponseWriter, r *http.Request) {
 
 func getHastags(w http.ResponseWriter, r *http.Request) {
 
+	//Parameters from the request
 	var limit int = 100
 	var starDate string
 	var endDate string
 
+
+	//This should be replaced by elastic
 	type tweetData struct {
 		Total int     `josn:"total"`
 		Num   string  `json:"unique_tags"`
@@ -42,6 +45,8 @@ func getHastags(w http.ResponseWriter, r *http.Request) {
 		log.Println("Json unmarshal error: \n", err)
 	}
 
+
+	//Json structure
 	type Days struct {
 		Ratio [][]float32 `json:"ratio"`
 	}
@@ -61,12 +66,13 @@ func getHastags(w http.ResponseWriter, r *http.Request) {
 		RequestedInterval RequestedInterval `json:"requestedInterval"`
 	}
 
-	var send TweetParty
+	//Set up the response
+	var respons TweetParty
 
-	send.Name = tweets[0].Party
-	send.Limit = limit
-	send.StartDate = starDate
-	send.EndDate = endDate
+	respons.Name = tweets[0].Party
+	respons.Limit = limit
+	respons.StartDate = starDate
+	respons.EndDate = endDate
 
 	var hastags []string
 	var ratioDays [][]float32
@@ -80,10 +86,10 @@ func getHastags(w http.ResponseWriter, r *http.Request) {
 		hastags = append(hastags, tweets[i].Tag)
 	}
 
-	send.Hashtags = hastags
-	send.UniqueTags = len(tweets)
-	send.Days = Days{ratioDays}
-	send.RequestedInterval = RequestedInterval{ratioTotal}
+	respons.Hashtags = hastags
+	respons.UniqueTags = len(tweets)
+	respons.Days = Days{ratioDays}
+	respons.RequestedInterval = RequestedInterval{ratioTotal}
 
-	json.NewEncoder(w).Encode(send)
+	json.NewEncoder(w).Encode(respons)
 }
