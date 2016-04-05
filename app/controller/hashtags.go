@@ -2,24 +2,16 @@ package controller
 
 import (
 	"encoding/json"
+	"lcd/PTC-search-service/app/models"
+	"reflect"
+	"lcd/PTC-search-service/app/storage"
+	"gopkg.in/olivere/elastic.v3"
+	"net/http"
 	"io/ioutil"
 	"log"
-	"net/http"
-	"reflect"
-	"lcd/PTC-search-service/app/models"
-	"gopkg.in/olivere/elastic.v3"
-	"lcd/PTC-search-service/app/storage"
 )
 
-//apiVersion is a simple endpoint handler that
-//just writes a simple struct as json as the HTTP response.
-func ApiVersion(w http.ResponseWriter, r *http.Request) {
-	json.NewEncoder(w).Encode(
-		struct {
-			Name    string `json:"name"`
-			Version string `json:"version"`
-		}{"PTC-Search-Service", "0.1"})
-}
+
 
 func GetHastags(w http.ResponseWriter, r *http.Request) {
 
