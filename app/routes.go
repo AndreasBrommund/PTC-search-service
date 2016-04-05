@@ -1,6 +1,9 @@
-package ptc
+package app
 
 import (
+	"lcd/PTC-search-service/app/controller"
+	"lcd/PTC-search-service/app/web"
+
 	"github.com/gorilla/context"
 	"github.com/justinas/alice"
 )
@@ -8,19 +11,15 @@ import (
 //initRoutes constructs the routes exposed in this application.
 //It will also connect the routes with the handler functions,
 //optionally setting up middleware is also supported.
-func initRoutes() (routes Routes) {
-	middleware := alice.New(context.ClearHandler, loggingHandler)
+func routes() (routes web.Routes) {
+	middleware := alice.New(context.ClearHandler, web.LoggingHandler, web.RecoverHandler)
 
 	routes.Get("api version", "/api/1/",
-		middleware.ThenFunc(apiVersion))
-
-
+		middleware.ThenFunc(controller.ApiVersion))
 	routes.Get("get hastags", "/api/1/tags",
-		middleware.ThenFunc(getHastags))
-
-
+		middleware.ThenFunc(controller.GetHastags))
 	routes.Get("getting hashtags for user", "/api/1/hashtags",
-		middleware.ThenFunc(getTweetsFromUserID))
+		middleware.ThenFunc(controller.GetTweetsFromUserID))
 
 	return
 }

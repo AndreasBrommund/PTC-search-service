@@ -1,20 +1,19 @@
-package ptc
+package web
 
 import (
+	"encoding/json"
+	"errors"
 	"log"
 	"net/http"
 	"time"
 
-	"encoding/json"
-
 	"github.com/gorilla/context"
 	"github.com/julienschmidt/httprouter"
-	"errors"
 )
 
 //loggingHandler is a middleware that logs the time it takes to
 //serve a specific endpoint handler.
-func loggingHandler(next http.Handler) http.Handler {
+func LoggingHandler(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		t1 := time.Now()
 		next.ServeHTTP(w, r)
@@ -30,7 +29,7 @@ func loggingHandler(next http.Handler) http.Handler {
 // recoverHandler recovers from panics and logs the error to stdout
 // Response to the caller will contain a message with the error that made
 // service crash.
-func recoverHandler(next http.Handler) http.Handler {
+func RecoverHandler(next http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
 			if err := recover(); err != nil {
@@ -48,10 +47,10 @@ func recoverHandler(next http.Handler) http.Handler {
 
 //Param finds and returns the value from a url parameter
 //For example /example?token=123aBc would return 123aBc as a string.
-func Param (r *http.Request,key string) (s string,err error) {
+func Param(r *http.Request, key string) (s string, err error) {
 	s = r.URL.Query().Get(key)
 	if len(s) == 0 {
-		return "",errors.New("No parameter found for that key")
+		return "", errors.New("No parameter found for that key")
 	}
 	return
 }

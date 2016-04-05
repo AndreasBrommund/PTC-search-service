@@ -1,4 +1,4 @@
-package ptc
+package web
 
 import (
 	"net/http"
@@ -34,7 +34,7 @@ func (this *Routes) Post(name, path string, handlerFunc http.Handler) {
 
 //NewRouter creates a new httprouter.Router that have all the
 //routes defined under the initRoutes function.
-func NewRouter() *httprouter.Router {
+func NewRouter(initRoutes func() Routes) *httprouter.Router {
 	router := httprouter.New()
 	for _, route := range initRoutes() {
 		router.Handle(route.Method, route.Path, wrapHandler(route.HandlerFunc, route.Name))
