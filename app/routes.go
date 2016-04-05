@@ -10,8 +10,8 @@ import (
 //initRoutes constructs the routes exposed in this application.
 //It will also connect the routes with the handler functions,
 //optionally setting up middleware is also supported.
-func initRoutes() (routes web.Routes) {
 	middleware := alice.New(context.ClearHandler, web.LoggingHandler)
+func routes() (routes web.Routes) {
 
 	routes.Get("api version", "/api/1/",
 		middleware.ThenFunc(controller.ApiVersion))
