@@ -20,6 +20,8 @@ func routes() (routes web.Routes) {
 		middleware.ThenFunc(controller.GetHastags))
 	routes.Get("getting hashtags for user", "/api/1/hashtags",
 		middleware.ThenFunc(controller.GetTweetsFromUserID))
+	routes.Get("api version", "/api/1/tweetRange",
+		middleware.ThenFunc(controller.TweetRange))
 
 	return
 }
