@@ -1,7 +1,8 @@
 package controller
 
 import (
-	"lcd/PTC-search-service/app/storage"
+	"encoding/json"
+	"lcd/PTC-search-service/app/models"
 	"lcd/PTC-search-service/app/web"
 	"log"
 	"net/http"
@@ -15,16 +16,19 @@ func TweetRange(w http.ResponseWriter, r *http.Request) {
 		id string
 	}
 
-	accountID, err := web.Param(r, "account")
+	accountId, err := web.Param(r, "account")
 	if err != nil {
 		log.Println("Could not fetch param 'account'")
 		log.Println(err)
-		return
 	}
 
 	//acc := account{accountID}
 
-	storage.ElasticSearch.GetTweetDateForUser(accountID, w)
+	//storage.ElasticSearch.GetTweetDateForUser(accountID, w)
+
+	var rng = models.Range{}
+	rng.GetRange(accountId)
+	json.NewEncoder(w).Encode(rng)
 
 	//party will be sent to elastic and hopfully we can
 	//retrive first and last post from that party
