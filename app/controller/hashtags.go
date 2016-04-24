@@ -94,7 +94,7 @@ func GetTweetsFromUserID(w http.ResponseWriter, r *http.Request) {
 					struct {
 						User     string   `json:"user_id"`
 						Hashtags []string `json:"hashtags"`
-					}{t.User, t.Hashtags})
+					}{t.UserID, t.Hashtags})
 			}
 		}
 	}
