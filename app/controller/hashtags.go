@@ -2,67 +2,81 @@ package controller
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"lcd/PTC-search-service/app/models"
 	"lcd/PTC-search-service/app/storage"
-	"log"
+	"lcd/PTC-search-service/app/web"
 	"net/http"
 	"reflect"
 
 	"gopkg.in/olivere/elastic.v3"
+
+	"log"
+	"strconv"
 )
 
 func GetHastags(w http.ResponseWriter, r *http.Request) {
 
 	//Parameters from the request
-	var limit int = 100
-	var starDate string
-	var endDate string
 
-	//This should be replaced by elastic
-	type tweetData struct {
-		Total int     `josn:"total"`
-		Num   string  `json:"unique_tags"`
-		Ratio float32 `json:"ratio"`
-		Party string  `json:"name"`
-		Tag   string  `json:"tag"`
-	}
-
-	data, err := ioutil.ReadFile("data.json")
+	account, err := web.Param(r, "group")
 	if err != nil {
-		log.Printf("File error: %v\n", err)
+		log.Println("Could not fetch param 'group'")
+		log.Println(err)
+	}
+	starDate, err := web.Param(r, "starDate")
+	if err != nil {
+		log.Println("Could not fetch param 'startDate'")
+		log.Println(err)
+	}
+	endDate, err := web.Param(r, "endDate")
+	if err != nil {
+		log.Println("Could not fetch param 'endDate'")
+		log.Println(err)
 	}
 
-	var tweets []tweetData
-	err = json.Unmarshal(data, &tweets)
+	limitStr, err := web.Param(r, "limit")
 	if err != nil {
-		log.Println("Json unmarshal error: \n", err)
+		log.Println("Could not fetch param 'limit'")
+		log.Println(err)
 	}
+
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil {
+		log.Println("Could not fetch param 'limit'")
+		log.Println(err)
+	}
+
+	log.Println(account, starDate, endDate, limit)
+
+	//Elastic
+	searchResult := storage.ElasticSearch.GetHastags(account, starDate, endDate, limit)
+
+	res, _ := searchResult.Aggregations.Terms("top_tags")
 
 	//Set up the response
 	var respons models.TweetParty
 
-	respons.Name = tweets[0].Party
+	respons.Name = account
 	respons.Limit = limit
 	respons.StartDate = starDate
 	respons.EndDate = endDate
+	total := res.SumOfOtherDocCount //The total numbers of hashtags except the top (limit) hashtags
 
-	var hastags []string
-	var ratioDays [][]float32
-	var ratioTotal []float32
+	var hashtags []string
+	var ratio []float32
 
-	for i := 0; i < limit; i++ {
-		var days []float32
-		days = append(days, tweets[i].Ratio)
-		ratioDays = append(ratioDays, days)
-		ratioTotal = append(ratioTotal, tweets[i].Ratio)
-		hastags = append(hastags, tweets[i].Tag)
+	for _, d := range res.Buckets {
+		hashtags = append(hashtags, d.Key.(string))
+		ratio = append(ratio, float32(d.DocCount)) //It is the total num of hashtags not the ratio
+		total += d.DocCount                        //Add the rest of the hashtags to to the total sum
 	}
 
-	respons.Hashtags = hastags
-	respons.UniqueTags = len(tweets)
-	respons.Days = models.Days{ratioDays}
-	respons.RequestedInterval = models.RequestedInterval{ratioTotal}
+	for i, d := range ratio {
+		ratio[i] = d / float32(total) //Calculate the ratio
+	}
+
+	respons.Hashtags = hashtags
+	respons.Ratio = ratio
 
 	json.NewEncoder(w).Encode(respons)
 }
@@ -70,12 +84,13 @@ func GetHastags(w http.ResponseWriter, r *http.Request) {
 func GetTweetsFromUserID(w http.ResponseWriter, r *http.Request) {
 	var searchResult *elastic.SearchResult
 	// elasticSearch is a global variable defined in server.go containing a Elastic object with a client
-	searchResult = storage.ElasticSearch.SearchTweetsFromID("100004471")
+	searchResult = storage.ElasticSearch.SearchTweetsFromID("3801501")
 	var ttyp models.Tweet
 	for _, item := range searchResult.Each(reflect.TypeOf(ttyp)) {
 		if t, ok := item.(models.Tweet); ok {
 			if len(t.Hashtags) != 0 {
 				json.NewEncoder(w).Encode(
+
 					struct {
 						User     string   `json:"user_id"`
 						Hashtags []string `json:"hashtags"`

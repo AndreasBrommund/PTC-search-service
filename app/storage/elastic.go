@@ -27,6 +27,23 @@ func Connect() error {
 	return nil
 }
 
+func (this *Elastic) GetHastags(twitter_id string, from string, to string, limit int) *elastic.SearchResult {
+	termQuery := elastic.NewTermQuery("following", twitter_id)
+	topTagsAgg := elastic.NewTermsAggregation().Field("hashtags").Size(limit)
+	searchResult, err := this.client.Search().
+		Index("tweets").                     // search in index "twitter"
+		Query(termQuery).                    // specify the query
+		From(0).Size(0).                     // take documents 0-9
+		Pretty(true).                        // pretty print request and response JSON
+		Aggregation("top_tags", topTagsAgg). //Agg func
+		Do()                                 // execute
+	if err != nil {
+		//Fix
+		panic(err)
+	}
+	return searchResult
+}
+
 // A (temporary) search method that returns an elastic SearchResult object that can be looped over
 func (this *Elastic) SearchTweetsFromID(user_id string) *elastic.SearchResult {
 
