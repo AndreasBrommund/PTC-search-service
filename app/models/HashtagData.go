@@ -1,6 +1,6 @@
 package models
 
-type TweetParty struct {
+type HashtagData struct {
 	Name      string    `json:"name"`
 	Limit     int       `json:"limit"`
 	StartDate string    `json:"startDate"`

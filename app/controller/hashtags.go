@@ -49,7 +49,7 @@ func GetHastags(w http.ResponseWriter, r *http.Request) {
 	res, _ := searchResult.Aggregations.Terms("top_tags")
 
 	//Set up the response
-	var respons models.TweetParty
+	var respons models.HashtagData
 
 	respons.Name = account
 	respons.Limit = limit
