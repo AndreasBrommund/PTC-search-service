@@ -10,8 +10,8 @@ import (
 
 	"gopkg.in/olivere/elastic.v3"
 
-	"log"
 	"strconv"
+	"log"
 )
 
 func GetHastags(w http.ResponseWriter, r *http.Request) {
@@ -45,8 +45,6 @@ func GetHastags(w http.ResponseWriter, r *http.Request) {
 		log.Println("Could not fetch param 'limit'")
 		log.Println(err)
 	}
-
-	log.Println(account, starDate, endDate, limit)
 
 	//Elastic
 	searchResult := storage.ElasticSearch.GetHashtags(account, starDate, endDate, limit)
