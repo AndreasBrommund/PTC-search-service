@@ -49,7 +49,7 @@ func GetHastags(w http.ResponseWriter, r *http.Request) {
 	log.Println(account, starDate, endDate, limit)
 
 	//Elastic
-	searchResult := storage.ElasticSearch.GetHastags(account, starDate, endDate, limit)
+	searchResult := storage.ElasticSearch.GetHashtags(account, starDate, endDate, limit)
 
 	res, _ := searchResult.Aggregations.Terms("top_tags")
 

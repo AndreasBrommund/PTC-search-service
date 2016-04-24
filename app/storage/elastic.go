@@ -27,18 +27,19 @@ func Connect() error {
 	return nil
 }
 
-func (this *Elastic) GetHastags(twitter_id string, from string, to string, limit int) *elastic.SearchResult {
-	termQuery := elastic.NewTermQuery("following", twitter_id)
+func (this *Elastic) GetHashtags(twitter_id string, from string, to string, limit int) *elastic.SearchResult {
+	termQuery := elastic.NewTermQuery("following", twitter_id)    //Get tweets from  the right account
+	rangeQuery := elastic.NewRangeQuery("date").From(from).To(to) //Get tweets in the time interval
+	boolQuery := elastic.NewBoolQuery().Must(termQuery, rangeQuery)
 	topTagsAgg := elastic.NewTermsAggregation().Field("hashtags").Size(limit)
-	searchResult, err := this.client.Search().
-		Index("tweets").                     // search in index "twitter"
-		Query(termQuery).                    // specify the query
-		From(0).Size(0).                     // take documents 0-9
+	searchResult, err := this.Client.Search().
+		Index("tweets").  // search in index "twitts"
+		Query(boolQuery). // specify the query
+		From(0).Size(0).
 		Pretty(true).                        // pretty print request and response JSON
 		Aggregation("top_tags", topTagsAgg). //Agg func
 		Do()                                 // execute
 	if err != nil {
-		//Fix
 		panic(err)
 	}
 	return searchResult
