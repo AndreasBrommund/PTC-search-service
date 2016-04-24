@@ -2,7 +2,7 @@ package storage
 
 import "gopkg.in/olivere/elastic.v3"
 
-func (this *Elastic) GetTweetDate(twitter_id string, asc bool) *elastic.SearchResult {
+func (this *Elastic) GetDateRange(twitter_id string, asc bool) *elastic.SearchResult {
 
 	if twitter_id == "" {
 		searchResult, err := this.Client.Search().
