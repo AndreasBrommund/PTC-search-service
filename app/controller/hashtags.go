@@ -6,9 +6,6 @@ import (
 	"lcd/PTC-search-service/app/storage"
 	"lcd/PTC-search-service/app/web"
 	"net/http"
-	"reflect"
-
-	"gopkg.in/olivere/elastic.v3"
 
 	"strconv"
 	"log"
@@ -77,23 +74,4 @@ func GetHastags(w http.ResponseWriter, r *http.Request) {
 	respons.Ratio = ratio
 
 	json.NewEncoder(w).Encode(respons)
-}
-
-func GetTweetsFromUserID(w http.ResponseWriter, r *http.Request) {
-	var searchResult *elastic.SearchResult
-	// elasticSearch is a global variable defined in server.go containing a Elastic object with a client
-	searchResult = storage.ElasticSearch.SearchTweetsFromID("3801501")
-	var ttyp models.Tweet
-	for _, item := range searchResult.Each(reflect.TypeOf(ttyp)) {
-		if t, ok := item.(models.Tweet); ok {
-			if len(t.Hashtags) != 0 {
-				json.NewEncoder(w).Encode(
-
-					struct {
-						User     string   `json:"user_id"`
-						Hashtags []string `json:"hashtags"`
-					}{t.UserID, t.Hashtags})
-			}
-		}
-	}
 }
