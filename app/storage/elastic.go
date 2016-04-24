@@ -10,7 +10,7 @@ var ElasticSearch Elastic
 
 // A type that holds our Elastic client, to prevent us from creating it over and over again
 type Elastic struct {
-	client *elastic.Client
+	Client *elastic.Client
 }
 
 // Create the elastic client and return a Elastic struct containing the client
@@ -39,7 +39,7 @@ func (this *Elastic) SearchTweetsFromID(user_id string) *elastic.SearchResult {
 	//termQuery := elastic.NewTermQuery("user_id", user_id)
 	topTagsHitsAgg := elastic.NewTopHitsAggregation().Sort("user_id", true).Size(5).FetchSource(true)
 	topTagsAgg := elastic.NewTermsAggregation().Field("hashtags").Size(3).SubAggregation("top_tag_hits", topTagsHitsAgg)
-	searchResult, err := this.client.Search().
+	searchResult, err := this.Client.Search().
 		Index("test-index").               // search in index "twitter"
 		Query(elastic.NewMatchAllQuery()). // specify the query
 		Sort("user_id", true).             // sort by "user" field, ascending
