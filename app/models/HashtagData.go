@@ -5,6 +5,6 @@ type HashtagData struct {
 	Limit     int       `json:"limit"`
 	StartDate string    `json:"startDate"`
 	EndDate   string    `json:"endDate"`
-	Hashtags  []string  `json:"hastags"`
+	Hashtags  []string  `json:"hashtags"`
 	Ratio     []float32 `json:"ratio"`
 }
