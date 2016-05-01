@@ -7,15 +7,16 @@ import (
 	"lcd/PTC-search-service/app/web"
 	"net/http"
 
-	"strconv"
 	"log"
+	"strconv"
+	"strings"
 )
 
 func GetHastags(w http.ResponseWriter, r *http.Request) {
 
 	//Parameters from the request
 
-	account, err := web.Param(r, "group")
+	accounts, err := web.Param(r, "group")
 	if err != nil {
 		log.Println("Could not fetch param 'group'")
 		log.Println(err)
@@ -44,14 +45,15 @@ func GetHastags(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//Elastic
-	searchResult := storage.ElasticSearch.GetHashtags(account, starDate, endDate, limit)
+	accountArray := strings.Split(accounts, ",") // Split into array
+	searchResult := storage.ElasticSearch.GetHashtags(accountArray, starDate, endDate, limit)
 
 	res, _ := searchResult.Aggregations.Terms("top_tags")
 
 	//Set up the response
 	var respons models.HashtagData
 
-	respons.Name = account
+	respons.Name = accounts
 	respons.Limit = limit
 	respons.StartDate = starDate
 	respons.EndDate = endDate
