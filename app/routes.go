@@ -14,8 +14,6 @@ import (
 func routes() (routes web.Routes) {
 	middleware := alice.New(context.ClearHandler, web.LoggingHandler, web.RecoverHandler)
 
-	routes.Get("api version", "/api/1/",
-		middleware.ThenFunc(controller.ApiVersion))
 	routes.Get("get hastags", "/api/1/tags",
 		middleware.ThenFunc(controller.GetHashtags))
 	routes.Get("interval", "/api/1/interval",
