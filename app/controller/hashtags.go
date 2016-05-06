@@ -12,7 +12,7 @@ import (
 	"strings"
 )
 
-func GetHastags(w http.ResponseWriter, r *http.Request) {
+func GetHashtags(w http.ResponseWriter, r *http.Request) {
 
 	//Parameters from the request
 
