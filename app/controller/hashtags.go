@@ -48,32 +48,11 @@ func GetHashtags(w http.ResponseWriter, r *http.Request) {
 	accountArray := strings.Split(accounts, ",") // Split into array
 	searchResult := storage.ElasticSearch.GetHashtags(accountArray, starDate, endDate, limit)
 
-	res, _ := searchResult.Aggregations.Terms("top_tags")
 
 	//Set up the response
 	var respons models.HashtagData
-
-	respons.Name = accounts
-	respons.Limit = limit
-	respons.StartDate = starDate
-	respons.EndDate = endDate
-	total := res.SumOfOtherDocCount //The total numbers of hashtags except the top (limit) hashtags
-
-	var hashtags []string
-	var ratio []float32
-
-	for _, d := range res.Buckets {
-		hashtags = append(hashtags, d.Key.(string))
-		ratio = append(ratio, float32(d.DocCount)) //It is the total num of hashtags not the ratio
-		total += d.DocCount                        //Add the rest of the hashtags to to the total sum
-	}
-
-	for i, d := range ratio {
-		ratio[i] = d / float32(total) //Calculate the ratio
-	}
-
-	respons.Hashtags = hashtags
-	respons.Ratio = ratio
+	respons.Setup(accounts, starDate, endDate, limit)
+	respons.CalculateRatio(searchResult)
 
 	json.NewEncoder(w).Encode(respons)
 }
