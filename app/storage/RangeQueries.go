@@ -6,11 +6,11 @@ func (this *Elastic) GetDateRange(twitter_id string, asc bool) *elastic.SearchRe
 
 	if twitter_id == "" {
 		searchResult, err := this.Client.Search().
-		Index("tweets").   // search in index "tweets"
-		Sort("date", asc). // sort by "date" field, ascending ==> true
-		From(0).Size(1).   // take document 0
-		Pretty(true).      // pretty print request and response JSON
-		Do()
+			Index("tweets").   // search in index "tweets"
+			Sort("date", asc). // sort by "date" field, ascending ==> true
+			From(0).Size(1).   // take document 0
+			Pretty(true).      // pretty print request and response JSON
+			Do()
 
 		if err != nil {
 			panic(err)
@@ -20,12 +20,12 @@ func (this *Elastic) GetDateRange(twitter_id string, asc bool) *elastic.SearchRe
 
 	termQuery := elastic.NewTermQuery("following", twitter_id)
 	searchResult, err := this.Client.Search().
-	Index("tweets").   // search in index "tweets"
-	Query(termQuery).  // specify the query
-	Sort("date", asc). // sort by "date" field, ascending ==> true
-	From(0).Size(1).   // take document 0
-	Pretty(true).      // pretty print request and response JSON
-	Do()               // execute
+		Index("tweets").   // search in index "tweets"
+		Query(termQuery).  // specify the query
+		Sort("date", asc). // sort by "date" field, ascending ==> true
+		From(0).Size(1).   // take document 0
+		Pretty(true).      // pretty print request and response JSON
+		Do()               // execute
 
 	if err != nil {
 		panic(err)
