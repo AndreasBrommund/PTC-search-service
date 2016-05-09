@@ -21,7 +21,7 @@ func GetHashtags(w http.ResponseWriter, r *http.Request) {
 		log.Println("Could not fetch param 'group'")
 		log.Println(err)
 	}
-	starDate, err := web.Param(r, "starDate")
+	starDate, err := web.Param(r, "startDate")
 	if err != nil {
 		log.Println("Could not fetch param 'startDate'")
 		log.Println(err)
