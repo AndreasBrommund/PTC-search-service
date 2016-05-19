@@ -3,7 +3,6 @@ package controller
 import (
 	"encoding/json"
 	"lcd/PTC-search-service/app/models"
-	"lcd/PTC-search-service/app/storage"
 	"lcd/PTC-search-service/app/web"
 	"net/http"
 
@@ -12,7 +11,13 @@ import (
 	"strings"
 )
 
-func GetHashtags(w http.ResponseWriter, r *http.Request) {
+//Tags, controller function returning the top hashtags based on
+//the specified parameters in the Get request.
+// group: what twitter accounts to query,
+// startDate: from what date
+// endDate: until this date
+// limit: the limit on the top list, e.g 10 would mean the top 10 hashtags.
+func Tags(w http.ResponseWriter, r *http.Request) {
 
 	//Parameters from the request
 
@@ -46,13 +51,11 @@ func GetHashtags(w http.ResponseWriter, r *http.Request) {
 
 	//Elastic
 	accountArray := strings.Split(accounts, ",") // Split into array
-	searchResult := storage.ElasticSearch.GetHashtags(accountArray, starDate, endDate, limit)
-
 
 	//Set up the response
-	var respons models.HashtagData
+	var respons models.Tags
 	respons.Setup(accounts, starDate, endDate, limit)
-	respons.CalculateRatio(searchResult)
+	respons.CalculateRatio(accountArray)
 
 	json.NewEncoder(w).Encode(respons)
 }
