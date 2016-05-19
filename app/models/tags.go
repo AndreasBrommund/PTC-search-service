@@ -1,8 +1,12 @@
 package models
 
-import "gopkg.in/olivere/elastic.v3"
+import (
+	"lcd/PTC-search-service/app/storage"
+)
 
-type HashtagData struct {
+//Tags a model containg the
+//top 'limit' hashtags.
+type Tags struct {
 	Name      string    `json:"name"`
 	Limit     int       `json:"limit"`
 	StartDate string    `json:"startDate"`
@@ -11,14 +15,20 @@ type HashtagData struct {
 	Ratio     []float32 `json:"ratio"`
 }
 
-func (this *HashtagData) Setup(name, start, end string, limit int) {
+//Setup inits a new Tags pointer.
+func (this *Tags) Setup(name, start, end string, limit int) {
 	this.Name = name
 	this.StartDate = start
 	this.EndDate = end
 	this.Limit = limit
 }
 
-func (this *HashtagData) CalculateRatio(searchResult *elastic.SearchResult) {
+//CalculateRatio is responsbile for making requests to elastic and
+//performing ratio calculates on the returned data. Then populating the
+//Hashtags and Ratio arrays.
+func (this *Tags) CalculateRatio(accountArray []string) {
+	searchResult := storage.ElasticSearch.GetHashtags(accountArray,
+		this.StartDate, this.EndDate, this.Limit)
 	topTag, _ := searchResult.Aggregations.Terms("top_tags")
 	total := topTag.SumOfOtherDocCount //The total numbers of hashtags except the top (limit) hashtags
 	var hashtags []string
