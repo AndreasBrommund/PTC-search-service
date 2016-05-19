@@ -40,8 +40,8 @@ func (this *Tags) Setup(group, start, end string, limit int) {
 //CalculateRatio is responsbile for making requests to elastic and
 //performing ratio calculates on the returned data. Then populating the
 //Hashtags and Ratio arrays.
-func (this *Tags) CalculateRatio(accountArray []string) error{
-	searchResult,err := storage.ElasticSearch.GetHashtags(accountArray,
+func (this *Tags) CalculateRatio(accountArray []string) error {
+	searchResult, err := storage.ElasticSearch.GetHashtags(accountArray,
 		this.StartDate, this.EndDate, this.Limit)
 
 	if err != nil {
