@@ -4,7 +4,7 @@ import "gopkg.in/olivere/elastic.v3"
 
 //GetHashtags queries elastic for the top 'limit' hashtags based from the
 //twitter accounts in the twitter_ids array.
-func (this *Elastic) GetHashtags(twitter_ids []string, from string, to string, limit int) *elastic.SearchResult {
+func (this *Elastic) GetHashtags(twitter_ids []string, from string, to string, limit int) (*elastic.SearchResult,error) {
 	// Loop through the accounts and create termsBoolQuery, a query with the 'should' argument so that we must have any of the given accounts for value following
 	termsBoolQuery := elastic.NewBoolQuery()
 	for _, account := range twitter_ids {
@@ -21,8 +21,5 @@ func (this *Elastic) GetHashtags(twitter_ids []string, from string, to string, l
 		Pretty(true).                        // pretty print request and response JSON
 		Aggregation("top_tags", topTagsAgg). //Agg func
 		Do()                                 // execute
-	if err != nil {
-		panic(err)
-	}
-	return searchResult
+	return searchResult,err
 }
