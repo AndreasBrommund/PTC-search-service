@@ -6,6 +6,7 @@ import (
 	"lcd/PTC-search-service/app/web"
 	"net/http"
 
+	"errors"
 	"log"
 	"strconv"
 	"strings"
@@ -19,34 +20,33 @@ import (
 // limit: the limit on the top list, e.g 10 would mean the top 10 hashtags.
 func Tags(w http.ResponseWriter, r *http.Request) {
 
-	//Parameters from the request
+	//Check Parameters from the request
+	accounts, err := web.Param(r, models.TagsParameter(models.GROUP))
+	if err != nil {
+		writeError(w, err)
+		return
+	}
+	starDate, err := web.Param(r, models.TagsParameter(models.START_DATE))
+	if err != nil {
+		writeError(w, err)
+		return
+	}
+	endDate, err := web.Param(r, models.TagsParameter(models.END_DATE))
+	if err != nil {
+		writeError(w, err)
+		return
+	}
 
-	accounts, err := web.Param(r, "group")
+	limitStr, err := web.Param(r, models.TagsParameter(models.LIMT))
 	if err != nil {
-		log.Println("Could not fetch param 'group'")
-		log.Println(err)
-	}
-	starDate, err := web.Param(r, "startDate")
-	if err != nil {
-		log.Println("Could not fetch param 'startDate'")
-		log.Println(err)
-	}
-	endDate, err := web.Param(r, "endDate")
-	if err != nil {
-		log.Println("Could not fetch param 'endDate'")
-		log.Println(err)
-	}
-
-	limitStr, err := web.Param(r, "limit")
-	if err != nil {
-		log.Println("Could not fetch param 'limit'")
-		log.Println(err)
+		writeError(w, err)
+		return
 	}
 
 	limit, err := strconv.Atoi(limitStr)
 	if err != nil {
-		log.Println("Could not fetch param 'limit'")
-		log.Println(err)
+		writeError(w, errors.New("Could not convert limit to string."))
+		return
 	}
 
 	//Elastic
@@ -58,4 +58,12 @@ func Tags(w http.ResponseWriter, r *http.Request) {
 	respons.CalculateRatio(accountArray)
 
 	json.NewEncoder(w).Encode(respons)
+}
+
+func writeError(w http.ResponseWriter, err error) {
+	log.Println(err)
+	w.WriteHeader(400)
+	json.NewEncoder(w).Encode(struct {
+		Msg string `json:"error_msg"`
+	}{err.Error()})
 }
