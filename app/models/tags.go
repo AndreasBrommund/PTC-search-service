@@ -2,12 +2,22 @@ package models
 
 import (
 	"lcd/PTC-search-service/app/storage"
+	"reflect"
+)
+
+const (
+	GROUP = iota
+	LIMT
+	START_DATE
+	END_DATE
+	HASHTAGS
+	RATIO
 )
 
 //Tags a model containg the
 //top 'limit' hashtags.
 type Tags struct {
-	Name      string    `json:"name"`
+	Group     string    `json:"group"`
 	Limit     int       `json:"limit"`
 	StartDate string    `json:"startDate"`
 	EndDate   string    `json:"endDate"`
@@ -15,9 +25,13 @@ type Tags struct {
 	Ratio     []float32 `json:"ratio"`
 }
 
+func TagsParameter(index int) string {
+	return reflect.TypeOf(Tags{}).Field(index).Tag.Get("json")
+}
+
 //Setup inits a new Tags pointer.
-func (this *Tags) Setup(name, start, end string, limit int) {
-	this.Name = name
+func (this *Tags) Setup(group, start, end string, limit int) {
+	this.Group = group
 	this.StartDate = start
 	this.EndDate = end
 	this.Limit = limit
