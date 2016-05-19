@@ -5,5 +5,5 @@ import (
 )
 
 func Client(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, "/client", 301)
+	http.Redirect(w, r, "/client", http.StatusMovedPermanently) // http.StatusMovedPermanently = 301
 }
