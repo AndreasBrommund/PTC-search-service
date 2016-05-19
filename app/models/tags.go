@@ -40,9 +40,14 @@ func (this *Tags) Setup(group, start, end string, limit int) {
 //CalculateRatio is responsbile for making requests to elastic and
 //performing ratio calculates on the returned data. Then populating the
 //Hashtags and Ratio arrays.
-func (this *Tags) CalculateRatio(accountArray []string) {
-	searchResult := storage.ElasticSearch.GetHashtags(accountArray,
+func (this *Tags) CalculateRatio(accountArray []string) error{
+	searchResult,err := storage.ElasticSearch.GetHashtags(accountArray,
 		this.StartDate, this.EndDate, this.Limit)
+
+	if err != nil {
+		return err
+	}
+
 	topTag, _ := searchResult.Aggregations.Terms("top_tags")
 	total := topTag.SumOfOtherDocCount //The total numbers of hashtags except the top (limit) hashtags
 	var hashtags []string
@@ -60,4 +65,5 @@ func (this *Tags) CalculateRatio(accountArray []string) {
 
 	this.Hashtags = hashtags
 	this.Ratio = ratio
+	return err
 }
