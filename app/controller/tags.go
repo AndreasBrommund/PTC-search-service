@@ -66,7 +66,7 @@ func Tags(w http.ResponseWriter, r *http.Request) {
 
 func writeError(w http.ResponseWriter, err error) {
 	log.Println(err)
-	w.WriteHeader(400)
+	w.WriteHeader(http.StatusBadRequest)
 	json.NewEncoder(w).Encode(struct {
 		Msg string `json:"error_msg"`
 	}{err.Error()})
