@@ -55,7 +55,11 @@ func Tags(w http.ResponseWriter, r *http.Request) {
 	//Set up the response
 	var respons models.Tags
 	respons.Setup(accounts, starDate, endDate, limit)
-	respons.CalculateRatio(accountArray)
+	err = respons.CalculateRatio(accountArray)
+	if err != nil {
+		writeError(w, err)
+		return
+	}
 
 	json.NewEncoder(w).Encode(respons)
 }
