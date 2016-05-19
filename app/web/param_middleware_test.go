@@ -33,7 +33,7 @@ func testErrorOnAccessingNoneExistingParameterValue(t *testing.T) {
 }
 
 func testMultipleParameters(t *testing.T) {
-	e1 := "123aBc"
+	e1 := "123Abc"
 	e2 := "bca"
 	request, err := http.NewRequest("GET", "http://example.com?token=123Abc&tok=bca", nil)
 	if err != nil {

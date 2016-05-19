@@ -50,7 +50,7 @@ func RecoverHandler(next http.Handler) http.Handler {
 func Param(r *http.Request, key string) (s string, err error) {
 	s = r.URL.Query().Get(key)
 	if len(s) == 0 {
-		return "", errors.New("No parameter found for that key")
+		return "", errors.New("No parameter found for key: " + key)
 	}
 	return
 }

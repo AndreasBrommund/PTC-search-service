@@ -8,10 +8,11 @@ import (
 )
 
 //StartServer starts the entire web server.
-//It is also responsible for initiating the database struct.
+//Connects the router with the routes and
+//starts the file hosting of the frontend
 func StartServer(port string) {
 	router := web.NewRouter(routes)
 	router.ServeFiles("/client/*filepath", http.Dir(os.Getenv("PTCFRONTEND")))
 	log.Println("starting the webserver...", "http://localhost"+port)
-	http.ListenAndServe(port, router)
+	log.Fatal(http.ListenAndServe(port, router))
 }

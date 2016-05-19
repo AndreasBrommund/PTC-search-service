@@ -15,9 +15,9 @@ func routes() (routes web.Routes) {
 	middleware := alice.New(context.ClearHandler, web.LoggingHandler, web.RecoverHandler)
 
 	routes.Get("get hastags", "/api/1/tags",
-		middleware.ThenFunc(controller.GetHashtags))
+		middleware.ThenFunc(controller.Tags))
 	routes.Get("interval", "/api/1/interval",
-		middleware.ThenFunc(controller.TweetRange))
+		middleware.ThenFunc(controller.Interval))
 	routes.Get("client", "/",
 		middleware.ThenFunc(controller.Client))
 
