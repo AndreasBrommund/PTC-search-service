@@ -2,7 +2,10 @@ package storage
 
 import "gopkg.in/olivere/elastic.v3"
 
-func (this *Elastic) GetDateRange(twitter_id string, asc bool) *elastic.SearchResult {
+//GetDateInterval builds a query asking for
+//the specified twitter id's news or oldest tweet based on the
+//asc parameter. asc true means that news will be on top.
+func (this *Elastic) GetDateInterval(twitter_id string, asc bool) *elastic.SearchResult {
 
 	if twitter_id == "" {
 		searchResult, err := this.Client.Search().
