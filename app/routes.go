@@ -18,6 +18,8 @@ func routes() (routes web.Routes) {
 		middleware.ThenFunc(controller.Tags))
 	routes.Get("interval", "/api/1/interval",
 		middleware.ThenFunc(controller.Interval))
+	routes.Get("client", "/",
+		middleware.ThenFunc(controller.Client))
 
 	return
 }
